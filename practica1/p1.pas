@@ -17,8 +17,10 @@ e. Un módulo que elimine, del vector ordenado, las ventas con código de produc
 valores que se ingresan como parámetros.
 
 f. Un módulo que muestre el contenido del vector resultante del punto e).
+
 g. Un módulo que retorne la información (ordenada por código de producto de menor a
 mayor) de cada código par de producto junto a la cantidad total de productos vendidos.
+
 h. Un módulo que muestre la información obtenida en el punto g).
 
 }
@@ -36,6 +38,12 @@ type
   end;
 
   vectorVentas = array [1..dimF] of venta;
+
+  lista = ^nodo;
+  nodo = record
+    dato:venta;
+    sig:lista;
+  end;
 
 procedure leerRegistro(var dato:venta);
 begin
@@ -127,7 +135,6 @@ var
 	salto :integer;
   posInf, posSup :integer;
 begin
-	i:=1;
   posInf := encontrar(v, dimL,codInf);
   posSup := encontrar(v,dimL,codSup);
 
@@ -140,20 +147,73 @@ begin
 		end;
 end;
 
+procedure recorrerLista(l :lista);
+begin
+  while(l <> nil) do begin
+    WriteLn('Dia de venta: ');
+    WriteLn(l^.dato.diaVenta);
+    WriteLn('codigo: ');
+    WriteLn(l^.dato.codigo);
+    WriteLn('cantidad vendida: ');
+    WriteLn(l^.dato.cantVendida);
+    l := l^.sig;
+  end;
+end;
+
+procedure agregarAlFinal2 (var pI:lista;var pU:lista; d:venta);
+Var
+ nuevo:lista;
+Begin
+   new (nuevo); 
+   nuevo^.dato := d;
+  nuevo^.sig := nil;
+   if (pI = nil) then begin
+      pI:= nuevo;
+      pU:= nuevo;
+   end
+   else begin
+      pU^.sig :=nuevo;
+      pU := nuevo;       
+    end;
+End;
+
+procedure crearLista(var l:lista; v :vectorVentas; var ult: lista; dimL :integer);
+var
+  i :integer;
+begin
+  for  i := 1 to dimL do begin
+    if ((v[i].codigo mod 2) = 0) then
+    begin
+      agregarAlFinal2(l,ult,v[i]);
+    end;
+  end;  
+end;
+
+
 var
   v: vectorVentas;
   dimL :integer;
   pos1,pos2:integer;
+  l :lista;
+  ult :lista;
 begin
   Randomize;
   dimL := 0;
   retornarInfo(v, dimL); // a
   imprimirVector(v, dimL); // b
+  
   ordenarCodVenta(v, dimL); // c
-  WriteLn('- - - - Ordenado- - - - -');
+  WriteLn('|- - - - Ordenado- - - - -|');
   imprimirVector(v, dimL); // d
+
   insertarValoresBorrar(pos1,pos2);
-  eliminarDatos(v, dimL, pos1, pos2);
+  eliminarDatos(v, dimL, pos1, pos2); // e
   WriteLn('ELIMINADO');
-  imprimirVector(v, dimL); // d
+  imprimirVector(v, dimL); // f
+
+  l := nil;
+  ult := nil;
+  crearLista(l,v,ult,dimL);
+  WriteLn('-- LISTA CON SOLO PARES --');
+  recorrerLista(l);
 end.
