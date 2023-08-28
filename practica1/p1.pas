@@ -12,8 +12,10 @@ b. Un módulo que muestre el contenido del vector resultante del punto a).
 c. Un módulo que ordene el vector de ventas por código.
 
 d. Un módulo que muestre el contenido del vector resultante del punto c).
+
 e. Un módulo que elimine, del vector ordenado, las ventas con código de producto entre dos
 valores que se ingresan como parámetros.
+
 f. Un módulo que muestre el contenido del vector resultante del punto e).
 g. Un módulo que retorne la información (ordenada por código de producto de menor a
 mayor) de cada código par de producto junto a la cantidad total de productos vendidos.
@@ -81,17 +83,77 @@ begin
   end;
 end;
 
-procedure ordenarCodVenta(var v:vectorVentas);
+procedure ordenarCodVenta(var v:vectorVentas; dimL:integer);
+var
+i, j :integer;
+actual :venta;
 begin
-  
+  for i:= 1 to dimL do begin
+    actual := v[i];
+    j := i-1;
+    while (j > 0) and (v[j].codigo > actual.codigo) do begin
+      v[j+1] := v[j];
+      j := j - 1;
+    end;
+    v[j+1] := actual;
+  end;
+end;
+
+procedure insertarValoresBorrar(var pos1:integer; var pos2:integer);
+begin
+  WriteLn('Ingrese valor 1');
+  ReadLn(pos1);
+  WriteLn('Ingrese valor 1');
+  ReadLn(pos2);
+end;
+
+function encontrar(v :vectorVentas; dimL:integer; codigoVenta:integer):integer;
+var
+  i:integer;
+  pos: integer;
+begin
+  pos := 1;
+  while(pos <= dimL) and (v[pos].codigo <> codigoVenta) do begin
+    pos := pos +1;
+  end;
+  if(pos > dimL) then pos := 0;
+  encontrar := pos;
+end;
+
+procedure eliminarDatos(var v:vectorVentas; var dimL:integer; codInf:integer; codSup:integer);
+var
+	i:integer;
+	j:integer;
+	salto :integer;
+  posInf, posSup :integer;
+begin
+	i:=1;
+  posInf := encontrar(v, dimL,codInf);
+  posSup := encontrar(v,dimL,codSup);
+
+  if (posInf <> 0) and (posSup <> 0) then begin
+			salto := posSup - posInf + 1;
+			for i:= posInf to (dimL-salto) do begin
+				v[i] := v[i+salto];
+			end;
+			diml := diml - salto;
+		end;
 end;
 
 var
   v: vectorVentas;
   dimL :integer;
+  pos1,pos2:integer;
 begin
+  Randomize;
   dimL := 0;
   retornarInfo(v, dimL); // a
   imprimirVector(v, dimL); // b
-  ordenarCodVenta(v);
+  ordenarCodVenta(v, dimL); // c
+  WriteLn('- - - - Ordenado- - - - -');
+  imprimirVector(v, dimL); // d
+  insertarValoresBorrar(pos1,pos2);
+  eliminarDatos(v, dimL, pos1, pos2);
+  WriteLn('ELIMINADO');
+  imprimirVector(v, dimL); // d
 end.
