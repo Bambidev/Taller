@@ -111,11 +111,11 @@ procedure insertarValoresBorrar(var pos1:integer; var pos2:integer);
 begin
   WriteLn('Ingrese valor 1');
   ReadLn(pos1);
-  WriteLn('Ingrese valor 1');
+  WriteLn('Ingrese valor 2');
   ReadLn(pos2);
 end;
 
-function encontrar(v :vectorVentas; dimL:integer; codigoVenta:integer):integer;
+function encontrarInf(v :vectorVentas; dimL:integer; codigoVenta:integer):integer;
 var
   i:integer;
   pos: integer;
@@ -125,8 +125,22 @@ begin
     pos := pos +1;
   end;
   if(pos > dimL) then pos := 0;
-  encontrar := pos;
+  encontrarInf := pos;
 end;
+
+function encontrarSup(v :vectorVentas; dimL:integer; codigoVenta:integer; posInf:integer):integer;
+begin
+  while (v[posInf].codigo <> codigoVenta) do begin
+    posInf := posInf + 1;
+      while (v[posInf+1].codigo = codigoVenta) do begin
+        posInf := posInf + 1;
+      end;
+  end;
+
+  if(posInf > dimL) then posInf := 0;
+  encontrarSup := posInf;
+end;
+
 
 procedure eliminarDatos(var v:vectorVentas; var dimL:integer; codInf:integer; codSup:integer);
 var
@@ -135,8 +149,8 @@ var
 	salto :integer;
   posInf, posSup :integer;
 begin
-  posInf := encontrar(v, dimL,codInf);
-  posSup := encontrar(v,dimL,codSup);
+  posInf := encontrarInf(v, dimL,codInf);
+  posSup := encontrarSup(v,dimL,codSup,posInf);
 
   if (posInf <> 0) and (posSup <> 0) then begin
 			salto := posSup - posInf + 1;
