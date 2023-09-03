@@ -38,14 +38,70 @@ type
     ult :lista;
   end;
 
+  vector = array [1..8] of milista;
+
+  procedure registroPeli(var peli:pelicula);
+  begin
+    WriteLn('Ingrese codigo');
+    ReadLn(peli.codigo);
+    WriteLn('ingrese codigo Genero (1-8)');
+    ReadLn(peli.codigoGenero);
+    WriteLn('Ingrese puntaje');
+    ReadLn(peli.puntaje);
+  end;
+
+  procedure agregarFinal(var pI:lista; var pU :lista; peli :pelicula);
+  var
+    nuevo :lista;
+  begin
+    new (nuevo);
+    nuevo^.dato := peli;
+    nuevo^.sig := nil;
+    if (pI = Nil) then begin
+      pI := nuevo;
+      pU := nuevo;
+    end
+    else begin
+      pU^.sig := nuevo;
+      pU := nuevo;
+    end;  
+  end;
+
   procedure leerPelicula(var v:vector);
   var
     peli :pelicula;
   begin
-    
+    registroPeli(peli);
+    while (peli.codigo <> -1) do begin
+      AgregarFinal(v[peli.codigoGenero].pri, v[peli.codigoGenero].ult, peli);
+    end;
   end;
 
-  vector = array [1..8] of milista;
+  procedure imprimirLista(l :lista);
+  begin
+    if (l <> nil) then
+    begin
+      WriteLn(l^.dato.codigo);
+      WriteLn(l^.dato.codigoGenero);
+      WriteLn(l^.dato.puntaje);
+      imprimirLista(l^.sig);
+    end;
+  end;
+
+  procedure imprimirVector(v:vector);
+  var
+    i :integer;
+  begin
+    for i:= 1 to 8 do begin
+      imprimirLista(v[i].pri);
+      imprimirLista(v[i].ult);
+    end;
+  end;
+
+var
+  l :lista;
+  v :vector;
 begin
-  
+  leerPelicula(v);
+  imprimirVector(v);
 end.
