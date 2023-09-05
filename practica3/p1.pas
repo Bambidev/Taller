@@ -113,12 +113,12 @@ procedure InformarNumeroSocioConMasEdad (a: arbol);
 	begin
 	   if (a <> nil) then
 	   begin
-
-      if (a^.dato.edad >= maxEdad) then begin
+     
+     if (a^.dato.edad >= maxEdad) then begin
         maxEdad := a^.dato.edad;
         maxNum := a^.dato.numero
       end;
-	
+
 		  numeroMasEdad(a^.HI, maxEdad,maxNum);
 		  numeroMasEdad(a^.HD, maxEdad,maxNum);
 	   end; 
@@ -164,22 +164,75 @@ begin
 end;
 
 procedure InformarExistenciaNombreSocio (a :arbol);
-  function Buscar (a: arbol; num: integer): boolean;
+  function Buscar (a: arbol; nombre: String): boolean;
     begin
       if (a = nil) then Buscar := false
-      else if (a^.dato.numero = num) then Buscar := true
-      else if (num < a^.dato.numero) then Buscar := Buscar (a^.HI, num)
-      else Buscar := Buscar (a^.HD, num)
+      else begin
+        if (a^.dato.nombre = nombre) then Buscar := true;
+        Buscar(a^.HI,nombre);
+        Buscar(a^.HD,nombre);
+      end;
     end;
     
-var nombreBurcar: String;
+var nombreBuscar: String;
 begin
   write ('Ingrese nombre de socio a buscar: ');
-  Readln(nombreBurcar);
-  if (Buscar (a, nombreBurcar)) then writeln('El numero ', nombreBurcar, ' existe')
-  else writeln ('El numero ', nombreBurcar, ' no existe');
+  Readln(nombreBuscar);
+  if (Buscar (a, nombreBuscar)) then writeln('El nombre ', nombreBuscar, ' existe')
+  else writeln ('El numero ', nombreBuscar, ' no existe');
 end;
 
+procedure InformarCantidadSocios(a :arbol);
+  procedure contar(a :arbol;var cant :integer);
+  begin
+    if (a <> nil) then begin
+      contar(a^.HI,cant);
+      cant := cant + 1;
+      contar(a^.HD,cant);
+      end;
+  end;
+var
+  cant :integer;
+begin
+  cant := 0;
+  contar(a,cant);
+  WriteLn('la cantidad de socios es: ', cant);
+end;
+
+procedure InformarPromedioDeEdad(a :arbol);
+  procedure promedio(a :arbol; var suma:real; var cant :integer);
+  begin
+    if (a <> nil) then begin
+    promedio(a^.HI,suma,cant);
+    suma := suma + a^.dato.edad;
+    cant := cant + 1;
+    promedio(a^.HD,suma,cant);
+    end;
+  end;
+var
+  cant :Integer;
+  prom :real;
+  suma :real;
+begin
+  cant := 0;
+  promedio(a,suma, cant);
+  prom := suma / cant;
+  WriteLn('El promedio es: ', prom:2:2, ' y la suma es: ',suma);
+end;
+
+procedure InformarCantidadSociosEnRango(a:arbol);
+begin
+  
+end;
+
+procedure InformarNumerosSociosOrdenDeCreciente(a :arbol);
+begin
+  if (a <> nil) then begin
+    imprimirArbol(a^.HD);
+    Write(a^.dato.numero, ' | ');
+    imprimirArbol(a^.HI);
+  end;
+end;
 
 // programa principal
 var
@@ -211,19 +264,19 @@ begin
   InformarExistenciaNumeroSocio(a);
 
   //vi
-  InformarExistenciaNombreSocio (a);
+  InformarExistenciaNombreSocio(a);
 
   //vii
-  InformarCantidadSocios (a);
+  InformarCantidadSocios(a);
 
   //viii
-  InformarPromedioDeEdad (a);
+  InformarPromedioDeEdad(a);
 
   //ix
   InformarCantidadSociosEnRango (a);
 
   //x
-  InformarNumerosSociosOrdenCreciente (a);
+  //InformarNumerosSociosOrdenCreciente (a);
 
   //xi
   InformarNumerosSociosOrdenDeCreciente (a);
