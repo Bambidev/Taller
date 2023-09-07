@@ -122,6 +122,7 @@ type
       WriteLn('----------------------------');
       Writeln('El DNI del alumno es: ', nodo.dni);
       WriteLn('El año de ingreso es: ', nodo.anioIngreso);
+      WriteLn('----------------------------');
     end;
 
     procedure imprimirValores (a:arbol; valor:integer);
@@ -154,39 +155,68 @@ type
   end;
 
   procedure retornarDNIsup(a:arbol);
-    function buscarDni(a:arbol; var dniMax:integer):integer;
-    begin
-      if (a <> nil) then begin
-        if (a^.dato.dni >= dniMax) then buscarDni := a^.dato.dni;
-        buscarDni(a^.HI,dniMax);
-        buscarDni(a^.HD,dniMax);
-      end;
+     procedure buscarDni(a: arbol; var dniMax: integer);
+     var
+        dniActual: integer;
+     begin
+      if a <> nil then begin
+        dniActual := a^.dato.dni;
+        // Verificar si el DNI actual es mayor que el DNI máximo encontrado hasta ahora
+        if dniActual >= dniMax then begin
+          dniMax := dniActual;
+        end;
+        // Llamar recursivamente a las ramas HI y HD
+        buscarDni(a^.HI, dniMax);
+        buscarDni(a^.HD, dniMax);
     end;
+  end;
   var
     dniMax :integer;
   begin
     dniMax := -1;
-    WriteLn('El dni maximo es: ',buscarDni(a,dniMax));
+    buscarDni(a,dniMax);
+    WriteLn('El dni maximo es: ', dniMax);
   end;
 
   procedure retornarImpar(a:arbol);
-    procedure contarImpares(a:arbol; var impares:integer);
+    function contarImpares(a: arbol): integer;
     begin
-      if (a <> nil) then begin
-        if ((a^.dato.legajo mod 2) <> 0) then impares := impares + 1;
-        contarImpares(a^.HI,impares); 
-        contarImpares(a^.HD,impares);
-      end;
+      if a = nil then
+        contarImpares := 0
+      else begin
+      // Verificar si el legajo del alumno en el nodo actual es impar
+      if a^.dato.legajo mod 2 <> 0 then
+        contarImpares := 1
+      else
+        contarImpares := 0;
+      // Recursivamente contar los alumnos con legajos impares en las ramas HI y HD
+      contarImpares := contarImpares + contarImpares(a^.HI) + contarImpares(a^.HD);
     end;
-  var
-    impares :integer;
+  end;
   begin
-    impares := 0;
-    contarImpares(a,impares);
-    WriteLn('La catidad de impares es: ',impares);
+    WriteLn('La catidad de impares es: ',contarImpares(a));
   end;
 
-
+  procedure retornarPromedios(a :arbol);
+    procedure ImprimirAlumnosProm(a: arbol; valor :real);
+    begin
+      if (a <> nil) then begin
+        imprimirValores(a^.HI,valor);
+        if (a^.dato.finales <> nil) then begin
+          recorrerLista(a^.dato.finales)
+        end;
+        if (a^.dato.legajo < valor) then imprimirNodo(a^.dato);
+        imprimirValores(a^.HD,valor);
+    end;
+  var
+    promedio :real;
+    suma :real;
+    valor :integer;
+  begin
+    WriteLn('Ingrese un promedio: ');
+    ReadLn(valor);
+    ImprimirAlumnosProm(a,valor);
+  end;
 var
   a :arbol;
 begin
@@ -198,8 +228,14 @@ begin
   {d. Un módulo que reciba la estructura generada en a. y retorne el DNI más grande.}
   retornarDNIsup(a);
   {e. Un módulo que reciba la estructura generada en a. y retorne la cantidad de alumnos con
-legajo impar.}
+  legajo impar.}
   retornarImpar(a);
+  {
+    f. Un módulo que reciba la estructura generada en a. y un valor entero. Este módulo debe
+  retornar los legajos y promedios de los alumnos cuyo promedio supera el valor ingresado.
+  }
+  retornarPromedios(a);
+
 
 
 end.
