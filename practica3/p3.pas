@@ -203,7 +203,7 @@ type
       if (a <> nil) then begin
         imprimirValores(a^.HI,valor);
         if (a^.dato.finales <> nil) then begin
-          recorrerLista(a^.dato.finales)
+          recorrerLista(a^.dato.finales);
         end;
         if (a^.dato.legajo < valor) then imprimirNodo(a^.dato);
         imprimirValores(a^.HD,valor);
