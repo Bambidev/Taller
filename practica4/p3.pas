@@ -6,9 +6,9 @@ a. Un módulo que lea la información de los finales rendidos por los alumnos y 
 almacene en dos estructuras de datos.
 
 i. Una estructura que para cada alumno se almacenen sólo código y nota de las
-materias aprobadas (4 a 10). De cada final rendido se lee el código del alumno, el
-código de materia y la nota (valor entre 1 y 10). La lectura de los finales finaliza con
-nota -1. La estructura debe ser eficiente para buscar por código de alumno.
+materias aprobadas (4 a 10). 
+De cada final rendido se lee el código del alumno, el código de materia y la nota (valor entre 1 y 10). 
+La lectura de los finales finaliza con nota -1. La estructura debe ser eficiente para buscar por código de alumno.
 
 ii. Otra estructura que almacene para cada materia, su código y todos los finales
 rendidos en esa materia (código de alumno y nota).
@@ -25,11 +25,11 @@ códigos de alumnos ingresados.
 program p3;
 type
   subnota = 1..10;
-  subnotaAprobada = 1..10;
+  subnotaAprobada = 4..10;
 
   alumno = record
     codigo :integer;
-    notaAprobada :subnotaAprobada;
+    notaAprobadas :subnotaAprobada;
   end;
 
   final = record
@@ -53,13 +53,13 @@ type
     HD :arbolFinal;
   end;
 
-  procedure generarLista(a:Arbol)
-    procedure agregarArbolFinal(a:arbolFinal; f :finales);
+  procedure generarLista(var a:Arbol)
+    procedure agregarArbolFinal(var a:arbolFinal; f :finales);
     begin
       
     end;
 
-    procedure agregarArbolAlum(a:arbolAlum; alum :alumno);
+    procedure agregarArbolAlum(var a:arbolAlum; alum :alumno);
     begin
       
     end;
@@ -75,8 +75,14 @@ type
         ReadLn(f.codigoMateria);
       end;
     end;
+  var
+    alum :alumno;
+    f :final;
   begin
-    
+    leerFinal(f);
+    while(f.nota <> -1) do begin
+      agregarArbolFinal
+    end;
   end;
   
 // Programa principal.
