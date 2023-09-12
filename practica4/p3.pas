@@ -24,8 +24,17 @@ códigos de alumnos ingresados.
 
 program p3;
 type
+
   subnota = 1..10;
   subnotaAprobada = 4..10;
+
+  materias = array [1..30] of lista;
+  lista = ^nodolista;
+  nodolista = record
+    codigo :integer;
+    codigoAlumno :integer;
+    nota :real;
+  end;
 
   alumno = record
     codigo :integer;
@@ -36,15 +45,6 @@ type
     codigoAlumno :integer;
     codigoMateria :integer;
     nota :subNota;
-  end;
-
-  arbolAlum = ^nodoAlum;
-  arbolFinal = ^nodoFinal;
-
-  nodoAlum = record
-    dato :alumnol;
-    HI :arbolAlum;
-    HD :arbolAlum;
   end;
 
   nodoFinal = record 
